@@ -17,6 +17,7 @@ if (NOT BISON_EXECUTABLE)
   endif ()
 endif ()
 
+set_directory_properties (PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "compiler-parser.output")
 
 # Targets
 
@@ -24,12 +25,19 @@ add_executable (
 	compiler
 	compiler-parser.tab.cpp
 	compiler-tokens.cpp
+	compiler-parser.tab.hpp
 )
 
 add_custom_command(
 	OUTPUT compiler-parser.tab.cpp
 	COMMAND ${BISON_EXECUTABLE}
 	ARGS -v -d -o ${PROJECT_SOURCE_DIR}/compiler-parser.tab.cpp compiler-parser.y
+	DEPENDS compiler-parser.y
+)
+
+add_custom_command(
+	OUTPUT compiler-parser.tab.hpp
+	COMMAND ${CMAKE_COMMAND} -E echo "Regenerated compiler-parser.tab.hpp"
 	DEPENDS compiler-parser.y
 )
 
