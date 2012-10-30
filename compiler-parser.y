@@ -200,6 +200,7 @@ usage( const char* cmd )
    exit( -1 );
 }
 
+int
 main( int argc, char* argv[] )
 {
    if( argc != 2 ) {
@@ -216,6 +217,8 @@ main( int argc, char* argv[] )
    do {
       yyparse();
    } while( !feof( yyin ) );
+
+   return 0;
 }
 
 void yyerror( const char* s ) {

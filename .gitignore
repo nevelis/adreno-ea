@@ -4,3 +4,12 @@ compiler
 *.output
 *.tab.*
 *.swp
+
+# CMake generated stuff
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+ALL_BUILD*
+ZERO_CHECK*
+
