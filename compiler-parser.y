@@ -123,17 +123,23 @@ statements : T_EOL
            | statements statement T_EOL
            ;
 
+space :
+      | space T_SPACE
+      | space T_TAB
+      ;
+
 statement : label
           | builtin_func
-          | if_stmt
+          | space if_stmt
           | expression_statement
           ;
 
-if_stmt : T_IF T_LPAREN expression T_RPAREN block
-        | T_IF T_LPAREN expression T_RPAREN block T_ELSE block
+if_stmt : T_IF space T_LPAREN space expression space T_RPAREN space block
+        | if_stmt space T_ELSE space block
         ;
 
-expression_statement : expression T_SEMICOLON
+expression_statement : expression space T_SEMICOLON
+                     | builtin_func space T_SEMICOLON
                      ;
 
 
@@ -141,11 +147,11 @@ block : statement
       | statement_block
       ;
 
-builtin_func : T_IDENT function_args T_COLON
+builtin_func : T_IDENT space function_args space T_COLON
              ;
 
 function_args : expression
-              | function_args expression
+              | function_args space T_COMMA space expression
               ;
 
 label : T_IDENT T_COLON
@@ -160,7 +166,7 @@ constant_expression : T_INT
                     | T_STR
                     ;
 
-comparison : expression T_EQU expression
+comparison : expression space T_EQU space expression
            ;
 
 variable : var_player
@@ -171,6 +177,7 @@ variable : var_player
          | var_scope
          | var_account
          | var_account_global
+         | var_instance
          ;
 
 var_player     : T_IDENT ;
@@ -181,6 +188,7 @@ var_npc        : T_DOT T_IDENT;
 var_scope      : T_DOT T_AT T_IDENT;
 var_account    : T_HASH T_IDENT;
 var_account_global : T_HASH T_HASH T_IDENT;
+var_instance   : T_SQUOTE T_IDENT;
 
 
 %%

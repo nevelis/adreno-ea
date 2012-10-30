@@ -27,6 +27,7 @@ L [A-Za-z_]
 "}"               { TOKEN( T_RBRACE ); }
 "("               { TOKEN( T_LPAREN ); }
 ")"               { TOKEN( T_RPAREN ); }
+"=="              { TOKEN( T_EQU ); }
 
 "monster"         { TOKEN( T_MONSTER ); }
 "boss_monster"    { TOKEN( T_BOSS_MONSTER ); }
