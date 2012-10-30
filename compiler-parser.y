@@ -19,18 +19,18 @@
    char* sval;
 }
 
-%token <ival> T_INT T_TOKEN
+%token <ival> T_INT T_SPACE
 %token <sval> T_STR T_IDENT
 
 %token T_COMMA T_TAB T_LPAREN T_RPAREN T_COLON
-%token T_MAPFLAG T_MONSTER T_FUNCTION T_SCRIPT T_DUPLICATE T_WARP T_SHOP
+%token T_MAPFLAG T_MONSTER T_BOSS_MONSTER T_FUNCTION T_SCRIPT T_DUPLICATE T_WARP T_SHOP
 %token T_EOL T_EOF 0
 
 %start eascript
 
 %%
 
-eascript : declarations T_EOF;
+eascript : declarations T_EOF
          ;
 
 declarations : declaration
@@ -49,11 +49,20 @@ declaration : mapflag
 mapflag : map_name T_TAB T_MAPFLAG T_TAB mapflag_arg
         ;
 
-map_name : T_STR
+map_name : T_IDENT
          ;
 
-npc_name : T_STR
+npc_name : npc_name_components
          ;
+
+npc_name_components : npc_name_component
+                    | npc_name_components npc_name_component
+                    ;
+
+npc_name_component : T_IDENT
+                   | T_INT
+                   | T_SPACE
+                   ;
 
 mapflag_arg : T_IDENT
             | mapflag_arg T_COMMA T_IDENT
@@ -62,13 +71,16 @@ mapflag_arg : T_IDENT
 map_location_facing : map_location T_COMMA T_INT
                     ;
 
-map_location : T_STR T_COMMA area
-             | T_IDENT T_COMMA area
+map_location : map_name T_COMMA area
              ;
 
-monster : map_location T_COMMA area T_TAB T_MONSTER T_TAB npc_name T_TAB T_INT T_COMMA T_INT T_COMMA T_INT T_COMMA T_INT T_COMMA monster_properties  {
-}
+monster : map_location T_COMMA area T_TAB monster_type T_TAB npc_name T_TAB T_INT T_COMMA T_INT T_COMMA T_INT T_COMMA T_INT T_COMMA monster_properties
+        | map_location T_COMMA area T_TAB monster_type T_TAB npc_name T_TAB T_INT T_COMMA T_INT T_COMMA T_INT T_COMMA T_INT T_COMMA T_INT
         ;
+
+monster_type : T_MONSTER
+             | T_BOSS_MONSTER
+             ;
 
 area : T_INT T_COMMA T_INT
      ;
