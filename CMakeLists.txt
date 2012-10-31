@@ -37,7 +37,7 @@ add_custom_command(
 
 add_custom_command(
 	OUTPUT compiler-parser.tab.hpp
-	COMMAND ${CMAKE_COMMAND} -E echo "Regenerated compiler-parser.tab.hpp"
+	COMMAND ${CMAKE_COMMAND} -E touch compiler-parser.tab.hpp
 	DEPENDS compiler-parser.y
 )
 
