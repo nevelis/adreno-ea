@@ -19,10 +19,10 @@
    char* sval;
 }
 
-%token <ival> T_INT Q_GLOBAL_TEMP
+%token <ival> T_INT T_EQU T_NEQ T_AND_SS
 %token <sval> T_STR T_IDENT
 
-%token T_IF T_ELSE T_FOR
+%token T_IF T_ELSE T_FOR T_SWITCH T_CASE T_DEFAULT
 %token T_EOL T_EOF 0
 
 %start eascript
@@ -33,6 +33,7 @@ eascript : code_block
          ;
 
 code_block : '{' code_fragment '}'
+           | code
            ;
 
 code_fragment : code
@@ -43,6 +44,7 @@ code : statement ';'
      | label ':'
      | if_stmt
      | for_loop
+     | switch_block
      ;
 
 statement : expression
@@ -59,14 +61,22 @@ expression : constant_expression
            | function_call
            | operation
            | comparison
+           | nested_expression
            | T_IDENT
            ;
 
+nested_expression : '(' expression ')'
+                  ;
+
 comparison : expression '>' expression
            | expression '<' expression
+           | expression T_EQU expression
+           | expression T_NEQ expression
+           | expression T_AND_SS expression
            ;
 
 operation : expression '+' expression
+          | expression '-' expression
           ;
 
 constant_expression : T_STR
@@ -85,6 +95,24 @@ if_stmt : T_IF '(' expression ')' code_block
 for_loop : T_FOR '(' statement ';' expression ';' statement ')' code_block
          ;
 
+switch_block : T_SWITCH '(' expression ')' '{' switch_cases '}'
+             ;
+
+switch_cases : switch_case
+             | switch_cases switch_case
+             ;
+
+switch_case : case_labels code_fragment
+            | case_labels code_block
+            ;
+
+case_labels : case_label
+            | case_labels case_label
+            ;
+
+case_label : T_CASE T_INT ':'
+           | T_DEFAULT ':'
+           ;
 %%
 
 void

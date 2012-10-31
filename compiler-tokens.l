@@ -15,19 +15,27 @@ L [A-Za-z_]
 
 ","               { TOKEN( ',' ); }
 ";"               { TOKEN( ';' ); }
+":"               { TOKEN( ':' ); }
 "("               { TOKEN( '(' ); }
 ")"               { TOKEN( ')' ); }
 "{"               { TOKEN( '{' ); }
 "}"               { TOKEN( '}' ); }
 "+"               { TOKEN( '+' ); }
+"-"               { TOKEN( '+' ); }
 "$"               { TOKEN( '$' ); }
 "@"               { TOKEN( '@' ); }
 "<"               { TOKEN( '<' ); }
 ">"               { TOKEN( '>' ); }
+"=="              { TOKEN( T_EQU ); }
+"!="              { TOKEN( T_NEQ ); }
+"&&"              { TOKEN( T_AND_SS ); }
 
 "if"              { TOKEN( T_IF ); }
 "else"            { TOKEN( T_ELSE ); }
 "for"             { TOKEN( T_FOR ); }
+"switch"          { TOKEN( T_SWITCH ); }
+"case"            { TOKEN( T_CASE ); }
+"default"         { TOKEN( T_DEFAULT ); }
 
 {L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \$@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
