@@ -4,30 +4,39 @@ OUTPUT=output.tmp
 
 for I in `find ~/Dev/3CeAM-trunk/npc -name "*.txt" -or -name "*.npc"`; do
 	# Find all script blocks in the NPC
-	cat $I | egrep -n ".*(script.*{$|duplicate.*)" > sections.tmp
+	cat $I | egrep -n ".*(	script	.*{|	duplicate.*)" > sections.tmp
 
 	exec < sections.tmp
 
-	read START_LINE
-	let START_LINE=1+`echo $START_LINE | cut -d: -f1`
-	while true; do
-		read END_LINE || break
-		case "$END_LINE" in
-			*script*)
-				let END_LINE=`echo $END_LINE | cut -d: -f1`-1
-				echo "{" > $OUTPUT
-				sed -n "${START_LINE},${END_LINE}p" < $I >> $OUTPUT
+	PREV=0
+	LAST=0
+	SKIP=0
+	SKIP_NEXT=0
+	while [ $LAST == 0 ]; do
+		read LINE || LAST=1
+		if [ $LAST == 1 ]; then
+			let LINE=`wc -l $I | awk '{ print $1 }'`+1
+		else
+			if grep -q "duplicate" <<<$LINE; then
+				SKIP_NEXT=1
+			fi
 
-				echo "Compiling code at $I:${START_LINE}"
+			LINE=`echo "$LINE" | cut -d: -f1`
+		fi
+
+		if [ $SKIP == 0 ]; then
+			if [ $PREV != 0 ]; then
+				let L=$LINE-1
+				echo "$I: $PREV-$L"
+				sed -n "${PREV},${L}p" < $I | sed 's/.*	script	[^{]*{/{/g' > \
+					$OUTPUT
+
 				./compiler $OUTPUT || exit 1
-				let START_LINE=$END_LINE+2
-				;;
-			*)
-				read START_LINE
-				let START_LINE=1+`echo $START_LINE | cut -d: -f1`
-				;;
-		esac
-	done
+			fi
+		fi
 
-	echo "OK"
+		PREV=$LINE
+		SKIP=$SKIP_NEXT
+		SKIP_NEXT=0
+	done
 done

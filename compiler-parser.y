@@ -19,10 +19,11 @@
    char* sval;
 }
 
-%token <ival> T_INT T_EQU T_NEQ T_AND_SS
+%token <ival> T_INT T_EQU T_NEQ T_AND T_OR
 %token <sval> T_STR T_IDENT
 
-%token T_IF T_ELSE T_FOR T_SWITCH T_CASE T_DEFAULT T_WHILE T_DO
+%token T_IF T_ELSE T_FOR T_SWITCH T_CASE T_DEFAULT T_WHILE T_DO T_MENU
+%token T_GLOBAL_TMP
 %token T_EOL T_EOF 0
 
 %start eascript
@@ -43,6 +44,7 @@ code_fragment : code
 code : statement ';'
      | label ':'
      | if_stmt
+     | menu_stmt ';'
      | for_loop
      | while_loop
      | do_while_loop
@@ -74,11 +76,14 @@ comparison : expression '>' expression
            | expression '<' expression
            | expression T_EQU expression
            | expression T_NEQ expression
-           | expression T_AND_SS expression
+           | expression T_AND expression
+           | expression T_OR expression
            ;
 
 operation : expression '+' expression
           | expression '-' expression
+          | expression '*' expression
+          | expression '/' expression
           ;
 
 constant_expression : T_STR
@@ -93,6 +98,17 @@ function_call : T_IDENT '(' ')'
 if_stmt : T_IF '(' expression ')' code_block
         | if_stmt T_ELSE code_block
         ;
+
+menu_stmt : T_MENU menu_options
+          ;
+
+menu_options : T_STR ',' menu_label
+             | menu_options ',' T_STR ',' menu_label
+             ;
+
+menu_label : T_IDENT
+           | '-'
+           ;
 
 for_loop : T_FOR '(' statement ';' expression ';' statement ')' code_block
          ;

@@ -22,14 +22,15 @@ H [A-Fa-f0-9]
 "{"               { TOKEN( '{' ); }
 "}"               { TOKEN( '}' ); }
 "+"               { TOKEN( '+' ); }
-"-"               { TOKEN( '+' ); }
-"$"               { TOKEN( '$' ); }
-"@"               { TOKEN( '@' ); }
+"-"               { TOKEN( '-' ); }
+"*"               { TOKEN( '*' ); }
+"/"               { TOKEN( '/' ); }
 "<"               { TOKEN( '<' ); }
 ">"               { TOKEN( '>' ); }
 "=="              { TOKEN( T_EQU ); }
 "!="              { TOKEN( T_NEQ ); }
-"&&"              { TOKEN( T_AND_SS ); }
+"&&"              { TOKEN( T_AND ); }
+"||"              { TOKEN( T_OR ); }
 
 "if"              { TOKEN( T_IF ); }
 "else"            { TOKEN( T_ELSE ); }
@@ -39,14 +40,16 @@ H [A-Fa-f0-9]
 "default"         { TOKEN( T_DEFAULT ); }
 "while"           { TOKEN( T_WHILE ); }
 "do"              { TOKEN( T_DO ); }
+"menu"            { TOKEN( T_MENU ); }
 
 0[Xx]{H}+         { yylval.ival = strtol( yytext, NULL, 16 ); return T_INT; }
 {L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \$@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \.@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
-\${L}+({L}|{D})*\$?  { yylval.sval = strdup( yytext ); return T_IDENT; }
+@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
+\${L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \"[^"]*\"         { yylval.sval = strdup( yytext ); return T_STR; }
--?{D}+            { yylval.ival = strtol( yytext, NULL, 10 ); return T_INT; }
+{D}+              { yylval.ival = strtol( yytext, NULL, 10 ); return T_INT; }
 \/\/.*$           ; // Ignore comments
 (\t\ )            ; // Ignore whitespace
 \r?\n?            ; // Ignore newlines
