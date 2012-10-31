@@ -22,29 +22,34 @@
 %token <ival> T_INT Q_GLOBAL_TEMP
 %token <sval> T_STR T_IDENT
 
+%token T_IF T_ELSE T_FOR
 %token T_EOL T_EOF 0
 
 %start eascript
 
 %%
 
-eascript : statement_block
+eascript : code_block
          ;
 
-statement_block : '{' statements '}'
-                ;
-
-statements : statement
-           | statements statement
+code_block : '{' code_fragment '}'
            ;
 
-statement : builtin_command ';'
-          | builtin_command expression_list ';'
-          | T_IDENT ':'
+code_fragment : code
+              | code_fragment code
+              ;
+
+code : statement ';'
+     | label ':'
+     | if_stmt
+     | for_loop
+     ;
+
+statement : expression
           ;
 
-builtin_command : T_IDENT
-                ;
+label : T_IDENT
+      ;
 
 expression_list : expression
                 | expression_list ',' expression
@@ -52,16 +57,33 @@ expression_list : expression
 
 expression : constant_expression
            | function_call
-           | expression '+' expression
+           | operation
+           | comparison
            | T_IDENT
            ;
+
+comparison : expression '>' expression
+           | expression '<' expression
+           ;
+
+operation : expression '+' expression
+          ;
 
 constant_expression : T_STR
                     | T_INT
                     ;
 
-function_call : T_IDENT '(' expression_list ')'
+function_call : T_IDENT '(' ')'
+              | T_IDENT '(' expression_list ')'
+              | T_IDENT expression_list
               ;
+
+if_stmt : T_IF '(' expression ')' code_block
+        | if_stmt T_ELSE code_block
+        ;
+
+for_loop : T_FOR '(' statement ';' expression ';' statement ')' code_block
+         ;
 
 %%
 

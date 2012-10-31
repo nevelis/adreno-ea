@@ -22,10 +22,17 @@ L [A-Za-z_]
 "+"               { TOKEN( '+' ); }
 "$"               { TOKEN( '$' ); }
 "@"               { TOKEN( '@' ); }
+"<"               { TOKEN( '<' ); }
+">"               { TOKEN( '>' ); }
 
-{L}+({L}|{D})*    { yylval.sval = strdup( yytext ); return T_IDENT; }
-\$@{L}+({L}|{D})*    { yylval.sval = strdup( yytext ); return T_IDENT; }
-\${L}+({L}|{D})*    { yylval.sval = strdup( yytext ); return T_IDENT; }
+"if"              { TOKEN( T_IF ); }
+"else"            { TOKEN( T_ELSE ); }
+"for"             { TOKEN( T_FOR ); }
+
+{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
+\$@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
+\.@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
+\${L}+({L}|{D})*\$?  { yylval.sval = strdup( yytext ); return T_IDENT; }
 \"[^"]*\"         { yylval.sval = strdup( yytext ); return T_STR; }
 -?{D}+            { yylval.ival = atoi( yytext ); return T_INT; }
 \/\/.*$           ; // Ignore comments
