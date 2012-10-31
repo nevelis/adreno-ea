@@ -22,7 +22,7 @@
 %token <ival> T_INT T_EQU T_NEQ T_AND_SS
 %token <sval> T_STR T_IDENT
 
-%token T_IF T_ELSE T_FOR T_SWITCH T_CASE T_DEFAULT
+%token T_IF T_ELSE T_FOR T_SWITCH T_CASE T_DEFAULT T_WHILE T_DO
 %token T_EOL T_EOF 0
 
 %start eascript
@@ -44,6 +44,8 @@ code : statement ';'
      | label ':'
      | if_stmt
      | for_loop
+     | while_loop
+     | do_while_loop
      | switch_block
      ;
 
@@ -113,6 +115,13 @@ case_labels : case_label
 case_label : T_CASE T_INT ':'
            | T_DEFAULT ':'
            ;
+
+while_loop : T_WHILE '(' expression ')' code_block
+           ;
+
+do_while_loop : T_DO '{' code_fragment '}' T_WHILE '(' expression ')'
+              ;
+
 %%
 
 void

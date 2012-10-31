@@ -10,6 +10,7 @@
 
 D [0-9]
 L [A-Za-z_]
+H [A-Fa-f0-9]
 
 %%
 
@@ -36,13 +37,16 @@ L [A-Za-z_]
 "switch"          { TOKEN( T_SWITCH ); }
 "case"            { TOKEN( T_CASE ); }
 "default"         { TOKEN( T_DEFAULT ); }
+"while"           { TOKEN( T_WHILE ); }
+"do"              { TOKEN( T_DO ); }
 
+0[Xx]{H}+         { yylval.ival = strtol( yytext, NULL, 16 ); return T_INT; }
 {L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \$@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \.@{L}+({L}|{D})*\$? { yylval.sval = strdup( yytext ); return T_IDENT; }
 \${L}+({L}|{D})*\$?  { yylval.sval = strdup( yytext ); return T_IDENT; }
 \"[^"]*\"         { yylval.sval = strdup( yytext ); return T_STR; }
--?{D}+            { yylval.ival = atoi( yytext ); return T_INT; }
+-?{D}+            { yylval.ival = strtol( yytext, NULL, 10 ); return T_INT; }
 \/\/.*$           ; // Ignore comments
 (\t\ )            ; // Ignore whitespace
 \r?\n?            ; // Ignore newlines
