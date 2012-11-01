@@ -10,6 +10,7 @@ failed() {
 	echo "$1"
 	cat output.tmp
 	let FAILED=$FAILED+1
+	exit 1
 }
 
 for I in `find ~/Dev/3CeAM-trunk/npc -name "*.txt" -or -name "*.npc"`; do

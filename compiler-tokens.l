@@ -6,8 +6,6 @@
    #include "compiler-parser.tab.hpp"
 
 	#define TOKEN( x ) return ( yylval.ival = ( x ) )
-
-	static void comment();
 %}
 
 D [0-9]
