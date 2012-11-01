@@ -6,13 +6,26 @@
    #include "compiler-parser.tab.hpp"
 
 	#define TOKEN( x ) return ( yylval.ival = ( x ) )
+
+	static void comment();
 %}
 
 D [0-9]
 L [A-Za-z_]
 H [A-Fa-f0-9]
 
+%s IN_COMMENT
+
 %%
+
+<INITIAL>{
+"/*"              BEGIN(IN_COMMENT);
+}
+<IN_COMMENT>{
+"*/"              BEGIN(INITIAL);
+[^*\n]+
+"*"
+}
 
 ","               { TOKEN( ',' ); }
 ";"               { TOKEN( ';' ); }

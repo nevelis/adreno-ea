@@ -41,7 +41,8 @@ code_fragment : code
               | code_fragment code
               ;
 
-code : statement ';'
+code : ';'
+     | statement ';'
      | label ':'
      | if_stmt
      | menu_stmt ';'
@@ -82,6 +83,7 @@ comparison : expression '>' expression
 
 operation : expression '+' expression
           | expression '-' expression
+          | '-' expression
           | expression '*' expression
           | expression '/' expression
           ;
